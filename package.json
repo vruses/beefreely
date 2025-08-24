@@ -11,6 +11,7 @@
     "svelte": "^5.36.12"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.2.2",
     "@crxjs/vite-plugin": "^2.0.3",
     "@sveltejs/vite-plugin-svelte": "^6.1.0",
     "@tsconfig/svelte": "^5.0.4",
