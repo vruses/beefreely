@@ -5,7 +5,10 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build"
+		"build": "vite build",
+		"format": "biome format --write",
+		"lint": "biome check",
+		"lint:fix": "biome check --fix"
 	},
 	"dependencies": {
 		"svelte": "^5.36.12"

@@ -8,6 +8,7 @@ export default defineManifest({
 	icons: {
 		48: "public/logo.png",
 	},
+	host_permissions: ["*://*.bilibili.com/*"],
 	action: {
 		default_icon: {
 			48: "public/logo.png",
@@ -21,7 +22,8 @@ export default defineManifest({
 	content_scripts: [
 		{
 			js: ["src/content/main.ts"],
-			matches: ["https://*/*"],
+			matches: ["*://*.bilibili.com/*"],
+			run_at: "document_start",
 		},
 	],
 	permissions: ["sidePanel", "contentSettings"],
