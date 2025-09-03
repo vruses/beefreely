@@ -1,7 +1,5 @@
 <script lang="ts">
-
-  let show = $state(false)
-  
+let show = $state(false);
 </script>
 
 <div class='popup-container'>

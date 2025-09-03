@@ -1,6 +1,5 @@
 <script lang='ts'>
-
-  import HelloWorld from '@/components/HelloWorld.svelte'
+import HelloWorld from "@/components/HelloWorld.svelte";
 </script>
 
 
