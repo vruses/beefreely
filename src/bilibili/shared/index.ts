@@ -1,3 +1,3 @@
-import { useNav, useReply } from './hooks'
+import { useNav, useReply, useReplyShareUrl } from './hooks'
 
-export default [useNav, useReply]
+export default [useNav, useReply, useReplyShareUrl]

@@ -1,3 +1,4 @@
+import { toResult } from '@/constants/utils'
 import userStore from '@/store/user'
 import type { RequestFn } from '@/utils/ajax'
 import { mockUserInfoResult } from './model/constants'
@@ -34,4 +35,18 @@ export const useReply: RequestFn<'fetch'> = (request) => {
   if (!request.url.includes('/x/v2/reply/wbi/main') && !request.url.includes('/x/v2/reply/reply')) return
 
   request.credentials = 'omit'
+}
+
+/**
+ * @description 评论 uri 复制分享功能
+ */
+export const useReplyShareUrl: RequestFn<'fetch'> = (request) => {
+  if (!request.url.includes('x/v2/reply/share_reply_material')) return
+  const uri = location.href.split('?').shift()
+  const rpid = new URL('https:' + request.url).searchParams.get('rpid')
+  request.response = (res) => {
+    res.json = toResult({
+      reply_share_url: `${uri}?comment_on=1&comment_root_id=${rpid}&share_tag=s_i#reply${rpid}`,
+    })
+  }
 }
