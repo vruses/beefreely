@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.3](https://github.com/vruses/beefreely/compare/v2.2.2...v2.2.3) (2026-03-04)
+
+
+### Bug Fixes
+
+* **core:** update document.cookie to include domain to avoid 412 precondition failed risk ([09a64d6](https://github.com/vruses/beefreely/commit/09a64d689be4cd0f36bb800f55805446b83dc70b))
+
 ### [2.2.2](https://github.com/vruses/beefreely/compare/v2.2.1...v2.2.2) (2026-02-02)
 
 
