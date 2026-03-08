@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.4](https://github.com/vruses/beefreely/compare/v2.2.3...v2.2.4) (2026-03-08)
+
+
+### Bug Fixes
+
+* determine login status accurately ([c00f6d9](https://github.com/vruses/beefreely/commit/c00f6d9ff4e4464d68c90b96937f21c4e5701781))
+
 ### [2.2.3](https://github.com/vruses/beefreely/compare/v2.2.2...v2.2.3) (2026-03-04)
 
 
