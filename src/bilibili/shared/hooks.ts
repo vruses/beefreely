@@ -42,11 +42,38 @@ export const useReply: RequestFn<'fetch'> = (request) => {
  */
 export const useReplyShareUrl: RequestFn<'fetch'> = (request) => {
   if (!request.url.includes('x/v2/reply/share_reply_material')) return
-  const uri = location.href.split('?').shift()
-  const rpid = new URL('https:' + request.url).searchParams.get('rpid')
+  const uri = ((searchParams) => {
+    const rpid = searchParams.get('rpid')!
+    const oid = searchParams.get('oid')!
+    const type = searchParams.get('type')!
+    switch (parseInt(type)) {
+      case 1: {
+        return `https://www.bilibili.com/video/av${oid}/#reply${rpid}`
+      }
+      case 11: {
+        if (location.hostname == 't.bilibili.com') {
+          return `https://www.bilibili.com/opus/${location.pathname.split('/')[1]}#reply${rpid}`
+        }
+        if (location.hostname == 'www.bilibili.com' && location.pathname.startsWith('/opus/')) {
+          return `https://www.bilibili.com/opus/${location.pathname.split('/')[2]}#reply${rpid}`
+        }
+        break
+      }
+      case 12: {
+        return `https://www.bilibili.com/read/cv${oid}/#reply${rpid}`
+      }
+      case 17: {
+        if (location.hostname == 't.bilibili.com') {
+          return `https://t.bilibili.com/${location.pathname.split('/')[1]}#reply${rpid}`
+        }
+        return `https://t.bilibili.com/${oid}#reply${rpid}`
+      }
+    }
+  })(new URL('https:' + request.url).searchParams)
+  if (!uri) return
   request.response = (res) => {
     res.json = toResult({
-      reply_share_url: `${uri}?comment_on=1&comment_root_id=${rpid}&share_tag=s_i#reply${rpid}`,
+      reply_share_url: uri,
     })
   }
 }
