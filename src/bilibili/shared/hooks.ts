@@ -69,14 +69,15 @@ export const useReplyShareUrl: RequestFn<'fetch'> = (request) => {
         return `https://t.bilibili.com/${oid}#reply${rpid}`
       }
       default: {
-        if (location.hostname !== 'space.bilibili.com') {
-          let uri = new URL(location.href)
-          uri.searchParams.set('comment_on', '1')
-          uri.searchParams.set('comment_root_id', rpid)
-          uri.searchParams.set('share_tag', 's_i')
-          uri.hash = `#reply${rpid}`
-          return uri.href
+        if (location.hostname === 'space.bilibili.com') {
+          break
         }
+        let uri = new URL(location.href)
+        uri.searchParams.set('comment_on', '1')
+        uri.searchParams.set('comment_root_id', rpid)
+        uri.searchParams.set('share_tag', 's_i')
+        uri.hash = `#reply${rpid}`
+        return uri.href
       }
     }
   })(new URL('https:' + request.url).searchParams)
