@@ -43,14 +43,14 @@ export const useReply: RequestFn<'fetch'> = (request) => {
 export const useReplyShareUrl: RequestFn<'fetch'> = (request) => {
   if (!request.url.includes('x/v2/reply/share_reply_material')) return
   if (location.hostname == 'space.bilibili.com') return
-  const uri = new URL(location)
+  const uri = new URL(location.href)
   const rpid = new URL('https:' + request.url).searchParams.get('rpid')
-  uri.searchParams.set('comment_on', 1)
-  uri.searchParams.set('comment_root_id', rpid)
+  uri.searchParams.set('comment_on', '1')
+  uri.searchParams.set('comment_root_id', rpid ?? '')
   uri.searchParams.set('share_tag', 's_i')
   uri.hash = `#reply${rpid}`
   request.response = (res) => {
-    if (res.json?.code == 0) return
+    if (res.json['code'] == 0) return
     res.json = toResult({
       reply_share_url: uri.toString(),
     })
