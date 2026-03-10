@@ -72,7 +72,7 @@ export const useReplyShareUrl: RequestFn<'fetch'> = (request) => {
         if (location.hostname === 'space.bilibili.com') {
           break
         }
-        let uri = new URL(location.href)
+        const uri = new URL(location.href)
         uri.searchParams.set('comment_on', '1')
         uri.searchParams.set('comment_root_id', rpid)
         uri.searchParams.set('share_tag', 's_i')
