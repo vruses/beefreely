@@ -56,6 +56,8 @@ class RequestHooker {
    */
   clear(): void {
     this.hooks.clear()
+    // 彻底移除拦截可能带来的副作用
+    ajaxHooker.unhook()
   }
 
   /**
