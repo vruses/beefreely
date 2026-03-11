@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.5](https://github.com/vruses/beefreely/compare/v2.2.4...v2.2.5) (2026-03-11)
+
+
+### Features
+
+* 将复制评论链接的链接生成方式根据类型进行判断 ([9246c1f](https://github.com/vruses/beefreely/commit/9246c1f60a30fd0fcd191a1b5c61d98604d267b9)), closes [/github.com/vruses/beefreely/issues/7#issuecomment-4020969803](https://github.com/vruses//github.com/vruses/beefreely/issues/7/issues/issuecomment-4020969803)
+
+
+### Bug Fixes
+
+* 复制评论链接使用原逻辑时排除空间页 ([0a699da](https://github.com/vruses/beefreely/commit/0a699dad242ca27945a445ee671f1263d8e91a29))
+* 复制评论链接无法根据类型进行判断时使用原逻辑 ([0372781](https://github.com/vruses/beefreely/commit/03727819233e2b960bd3a49d78302bd19226ef48))
+
 ### [2.2.4](https://github.com/vruses/beefreely/compare/v2.2.3...v2.2.4) (2026-03-08)
 
 
