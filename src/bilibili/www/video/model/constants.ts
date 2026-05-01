@@ -19,7 +19,22 @@ const relationToUploader = {
     special: 0,
   },
 }
+
+/**
+ * user's interaction with current video
+ */
+const relationToArchive = {
+  attention: false,
+  favorite: false,
+  season_fav: false,
+  like: false,
+  dislike: false,
+  coin: 0,
+}
+
 /**
  * result of user's relation to current video uploader
  */
 export const relationResult = toResult(relationToUploader)
+
+export const archiveRelationResult = toResult(relationToArchive)

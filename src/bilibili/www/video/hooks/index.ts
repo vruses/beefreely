@@ -3,7 +3,7 @@ import { img_key, sub_key } from '@/constants'
 import type { ResultType } from '@/types/response'
 import type { RequestFn } from '@/utils/ajax'
 import { encWbi } from '@/utils/wbi-sign'
-import { relationResult } from '../model/constants'
+import { archiveRelationResult, relationResult } from '../model/constants'
 import { DmWebView } from '../model/DmWebView'
 import type { PlayerUserInfo } from '../model/types'
 import { getEncryptSubtitle } from './useCrypt'
@@ -50,12 +50,22 @@ export const usePlayurl: RequestFn<'xhr'> = (request) => {
 }
 
 /**
- * @description 返回与视频up主的关系，显示粉丝数
+ * @description 返回与视频up主的关系，用于显示粉丝数
  */
 export const useRelation: RequestFn<'xhr'> = (request) => {
   if (!request.url.includes('/x/web-interface/relation')) return
   request.response = (res) => {
     res.responseText = JSON.stringify(relationResult)
+  }
+}
+
+/**
+ * @description 返回用户与该视频的互动数据，用于去除某些未登录提示
+ */
+export const useArchiveRelation: RequestFn<'xhr'> = (request) => {
+  if (!request.url.includes('/x/web-interface/archive/relation')) return
+  request.response = (res) => {
+    res.responseText = JSON.stringify(archiveRelationResult)
   }
 }
 
