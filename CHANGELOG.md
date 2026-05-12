@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.6](https://github.com/vruses/beefreely/compare/v2.2.5...v2.2.6) (2026-05-12)
+
+
+### Features
+
+* remove not logged in tooltip ([5e707c1](https://github.com/vruses/beefreely/commit/5e707c1499ea86bb81c6329eff83222566861362)), closes [#8](https://github.com/vruses/beefreely/issues/8)
+
 ### [2.2.5](https://github.com/vruses/beefreely/compare/v2.2.4...v2.2.5) (2026-03-11)
 
 
