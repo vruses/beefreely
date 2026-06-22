@@ -51,11 +51,13 @@ export default function useSubtitle() {
   function camelizeSubtitle(subtitle: Subtitles['subtitle']) {
     const camelizedSubtitle = mapKeys(subtitle, (_v, k) => camelCase(k)) as any
     // 字幕列表也需要转换
-    const camelizedSubtitles = subtitle.subtitles.map((subtitle) => {
-      return {
-        ...mapKeys(subtitle, (_v, k) => camelCase(k)),
-      }
-    })
+    const camelizedSubtitles = subtitle.subtitles
+      ? subtitle.subtitles.map((subtitle) => {
+          return {
+            ...mapKeys(subtitle, (_v, k) => camelCase(k)),
+          }
+        })
+      : null
     camelizedSubtitle.subtitles = camelizedSubtitles
     return camelizedSubtitle as CamelizedSubtitle
   }

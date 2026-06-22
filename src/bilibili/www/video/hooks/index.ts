@@ -103,7 +103,7 @@ export const useDmView: () => RequestFn<'xhr', unknown, ArrayBuffer> = () => {
       // 处理为指定格式的字幕
       const subtitle = await subtitleCache.current
       const camelizedSubtitle = subtitle ? camelizeSubtitle(subtitle) : null
-      if (camelizedSubtitle) {
+      if (camelizedSubtitle?.subtitles) {
         const camelizedSubtitles = camelizedSubtitle.subtitles.map((subtitle) => {
           return {
             ...subtitle,
