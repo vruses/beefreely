@@ -84,6 +84,22 @@ export default function onRequest(...args: RequestFn[]): void {
 }
 
 /**
+ * hook 的 url 相同时应使用此函数包装，避免重复覆盖 response 导致的副作用
+ */
+export function onResponse<T extends Ajax.BaseRequest>(
+  request: T,
+  // 根据 request 的类型推断响应数据类型是 Xhr 还是 Fetch
+  handler: (res: Parameters<NonNullable<T['response']>>[0]) => unknown
+): void {
+  const prev = request.response
+  // @ts-expect-error
+  request.response = async (res) => {
+    if (prev) await prev(res)
+    await handler(res)
+  }
+}
+
+/**
  * 移除指定的请求钩子函数
  */
 export function offRequest(fn: RequestFn): void {
