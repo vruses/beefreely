@@ -1,13 +1,15 @@
 import protobuf from 'protobufjs'
 import { img_key, sub_key } from '@/constants'
 import type { ResultType } from '@/types/response'
-import type { RequestFn } from '@/utils/ajax'
+import { onResponse, type RequestFn } from '@/utils/ajax'
 import { encWbi } from '@/utils/wbi-sign'
 import { archiveRelationResult, relationResult } from '../model/constants'
 import { DmWebView } from '../model/DmWebView'
 import type { PlayerUserInfo } from '../model/types'
 import { getEncryptSubtitle } from './useCrypt'
 import useSubtitle from './useSubtitle'
+
+export { useHeartbeat, usePlayHistory, useVideoDetail } from './plugin/playHistory'
 
 /**
  * @description 控制播放器请求的用户信息始终为登录状态
@@ -39,14 +41,14 @@ export const usePlayurl: RequestFn<'xhr'> = (request) => {
   const query = encWbi(qsParams, img_key, sub_key)
   request.url = `//api.bilibili.com/x/player/wbi/playurl?${query}`
   // 还原window.__playinfo__对象
-  request.response = (res) => {
+  onResponse(request, async (res) => {
     Object.defineProperty(window, '__playinfo__', {
       get() {
         return JSON.parse(res.responseText ?? '{}')
       },
       configurable: true,
     })
-  }
+  })
 }
 
 /**
