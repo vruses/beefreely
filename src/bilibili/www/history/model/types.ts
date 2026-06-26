@@ -13,8 +13,8 @@ export interface HistoryRecord {
     cid: number
     part: string
     /** 业务类型，对应标签，记录筛选条件之一 */
-    business: string
-    /** 使用的观看设备，这里应恒为 2，也就是 PC */
+    business: 'archive' | 'live' | 'article' | ''
+    /** 使用的观看设备，这里应恒为 1，也就是 PC */
     dt: number
   }
   /** uploader 信息 */
