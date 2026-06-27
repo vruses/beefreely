@@ -15,8 +15,14 @@ export const useVideoDetail: RequestFn<'xhr'> = (request) => {
 
     const meta = playerMetaStore.currentVideoMeta
     meta.aid = view.aid
-    meta.bvid = view.bvid
-    meta.cid = view.cid
+
+    meta.history = {
+      ...meta.history,
+      oid: view.aid,
+      bvid: view.bvid,
+      cid: view.cid,
+      business: 'archive',
+    }
     meta.title = view.title
     meta.cover = view.pic
     meta.author_name = view.owner.name

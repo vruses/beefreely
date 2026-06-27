@@ -1,3 +1,4 @@
+import { toRaw } from '@vue/reactivity'
 import { historyDB, playerMetaStore } from '@/store/playHistory'
 import type { RequestFn } from '@/utils/ajax'
 
@@ -9,7 +10,7 @@ export const useHeartbeat: RequestFn = (request) => {
   const payload = new URLSearchParams(request.data as string)
   if (!payload) return
 
-  const meta = playerMetaStore.currentVideoMeta
+  const meta = toRaw(playerMetaStore.currentVideoMeta)
 
   historyDB.upsert({
     ...meta,

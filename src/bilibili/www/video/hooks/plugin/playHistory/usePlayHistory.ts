@@ -21,7 +21,7 @@ export const usePlayHistory: RequestFn<'xhr'> = (request) => {
     if (!history) return
     const playerData = JSON.parse(res.responseText)
     playerData.data.last_play_time = history.last_play_time
-    playerData.data.last_play_cid = history.cid
+    playerData.data.last_play_cid = history.history.cid
     res.responseText = JSON.stringify(playerData)
   })
 }
