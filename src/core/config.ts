@@ -22,6 +22,9 @@ export const domainConfig = {
             get: () => null,
             configurable: true,
           })
+          const script = document.createElement('script')
+          script.textContent = `const playurlSSRData = {}`
+          document.documentElement.appendChild(script)
         },
       ],
     },
