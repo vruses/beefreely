@@ -3,10 +3,10 @@ import ajaxHooker, { type Ajax } from '@/utils/ajax/ajax-hooker'
 /**
  * ajaxhooker 钩子函数类型
  * @template Type - 请求类型，支持 `'xhr'` 或 `'fetch'`
- * @template Payload - 请求参数类型，默认为 `unknown`
- * @template Result - 响应数据类型，默认为 `unknown`
+ * @template Payload - 请求参数类型，默认为 `any`
+ * @template Result - 响应数据类型，默认为 `any`
  */
-export type RequestFn<Type = unknown, Payload = unknown, Result = unknown> = (
+export type RequestFn<Type = unknown, Payload = any, Result = any> = (
   request: Type extends 'xhr' | 'fetch' ? Ajax.Request<Type, Payload, Result> : Ajax.BaseRequest
 ) => unknown
 
