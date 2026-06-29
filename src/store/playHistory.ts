@@ -85,46 +85,46 @@ const defaultHistoryRecord: HistoryRecord = {
   author_name: '',
   author_mid: 0,
   author_face: '',
-  duration: 0,
   videos: 1,
   tag_name: '',
   show_title: '',
   uri: '',
   badge: '',
-  // these data will update in useHeartbeat hook
   view_at: 0,
+  // these data will update in useHeartbeat hook
+  duration: 0,
   progress: 0,
   last_play_time: 0,
 }
 // TODO:
 // 直播页面：window.__SSR_INITIAL_STATE__
 /**
- * @description 将视频 detail 转化成 historyRecord
+ * @description 将视频或文章 detail 转化成 historyRecord
  */
-function getSSRVideoMeta(): HistoryRecord {
+function getSSRDetail(): HistoryRecord {
   const videoData = window?.__INITIAL_STATE__?.videoData
+  const articleData = window?.__INITIAL_STATE__?.detail
 
-  if (!videoData) {
+  if (!videoData && !articleData) {
     return defaultHistoryRecord
   }
 
   return {
     ...defaultHistoryRecord,
-    kid: videoData.aid ?? 0,
+    kid: videoData?.aid ?? Number(articleData?.basic?.rid_str ?? 0) ?? 0,
     history: {
       ...defaultHistoryRecord.history,
-      bvid: videoData.bvid ?? '',
-      oid: videoData.aid ?? 0,
-      cid: videoData.cid ?? 0,
+      bvid: videoData?.bvid ?? '',
+      oid: videoData?.aid ?? Number(articleData?.basic?.rid_str ?? 0) ?? 0,
+      cid: videoData?.cid ?? 0,
     },
-    title: videoData.title ?? '',
-    cover: videoData.pic ?? '',
-    author_name: videoData.owner?.name ?? '',
-    author_mid: videoData.owner?.mid ?? 0,
-    author_face: videoData.owner?.face ?? '',
-    duration: videoData.duration ?? 0,
-    videos: videoData.videos ?? 1,
-    tag_name: videoData.tag_name ?? '',
+    title: videoData?.title ?? articleData?.basic?.title ?? '',
+    cover: videoData?.pic ?? '',
+    author_name: videoData?.owner?.name ?? articleData?.modules?.[1].module_author?.name ?? '',
+    author_mid: videoData?.owner?.mid ?? Number(articleData?.basic?.uid ?? 0) ?? 0,
+    author_face: videoData?.owner?.face ?? '',
+    videos: videoData?.videos ?? 1,
+    tag_name: videoData?.tag_name ?? '',
   }
 }
 
@@ -133,7 +133,7 @@ export function usePlayerMetaStore() {
   // ssr 数据挂载需要一定时间，这里让 meta 信息被调用时才初始化
   return {
     get currentVideoMeta() {
-      currentVideoMeta.value ??= reactive(getSSRVideoMeta())
+      currentVideoMeta.value ??= reactive(getSSRDetail())
       return currentVideoMeta.value
     },
   }

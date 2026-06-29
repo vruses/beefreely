@@ -17,10 +17,44 @@ export interface VideoDetailView {
   pages: Array<unknown>
 }
 
+/** 文章详细信息 */
+export interface OpusDetail {
+  /** aid */
+  id_str: string
+  type: number
+  basic: {
+    comment_type: number
+    comment_id_str: string
+    title: string
+    uid: string
+    tribee: unknown
+    like_icon: {
+      id: string
+      start_url: string
+      action_url: string
+      end_url: string
+    }
+    editable: boolean
+    aigc: boolean
+    open_app_extra: string
+    /** cvid */
+    rid_str: string
+    article_type: number
+    is_only_fans: boolean
+  }
+  modules: {
+    1: {
+      module_author: {
+        name: string
+      }
+    }
+  }
+}
+
 declare global {
   interface Window {
     player?: unknown // Use a more specific type if you know it
-    __INITIAL_STATE__?: { videoData: VideoDetailView }
+    __INITIAL_STATE__?: { videoData: VideoDetailView; detail: OpusDetail }
     /**
      * 视频页首次加载的视频信息，后续切换视频不再变更
      * 从 __INITIAL_STATE__.videoData 读取
