@@ -1,3 +1,3 @@
-import { usePlayHistory } from './hooks'
+import { useBangumiDetail, useBangumiLogin, useCover } from './hooks'
 
-export default [usePlayHistory]
+export default [useBangumiLogin, useBangumiDetail, useCover]

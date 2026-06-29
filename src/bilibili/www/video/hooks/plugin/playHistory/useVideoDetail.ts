@@ -14,7 +14,7 @@ export const useVideoDetail: RequestFn<'xhr'> = (request) => {
     if (!view) return
 
     const meta = playerMetaStore.currentVideoMeta
-    meta.aid = view.aid
+    meta.kid = view.aid
 
     meta.history = {
       ...meta.history,

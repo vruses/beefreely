@@ -2,6 +2,12 @@
  * 历史记录列表项
  */
 export interface HistoryRecord {
+  /**
+   * archive: 同 aid
+   * ogc: 同 season_id
+   * live: 同 id
+   */
+  kid: number
   /** 标签，如直播、番剧、课堂，细分具体的 archive 种类 */
   badge: string
   title: string
@@ -16,6 +22,9 @@ export interface HistoryRecord {
     business: 'archive' | 'live' | 'article' | ''
     /** 使用的观看设备，这里应恒为 1，也就是 PC */
     dt: number
+
+    // bangumi 专属
+    epid?: number
   }
   /** uploader 信息 */
   author_name: string
@@ -32,9 +41,14 @@ export interface HistoryRecord {
   /** 视频集数 */
   videos: number
 
+  // bangumi 专属
+  /** 章节标题代替 author_name 的显示 */
+  show_title?: string
+  /** 通过 uri 而非 bvid 跳转至番剧 */
+  uri?: string
+
   // 多余的字段也直接并入一起方便处理
-  /** 同 oid */
-  aid: number
+
   /** 上次播放时间 */
   last_play_time: number
 }

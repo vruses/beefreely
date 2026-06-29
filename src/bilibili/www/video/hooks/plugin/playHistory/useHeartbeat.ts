@@ -12,10 +12,11 @@ export const useHeartbeat: RequestFn = (request) => {
 
   const meta = toRaw(playerMetaStore.currentVideoMeta)
 
-  historyDB.upsert({
-    ...meta,
-    progress: Number(payload.get('played_time') ?? 0),
-    duration: Number(payload.get('video_duration') ?? 0),
-    last_play_time: Number(payload.get('played_time') ?? 0) * 1000,
-  })
+  if (meta.kid)
+    historyDB.upsert({
+      ...meta,
+      progress: Number(payload.get('played_time') ?? 0),
+      duration: Number(payload.get('video_duration') ?? 0),
+      last_play_time: Number(payload.get('played_time') ?? 0) * 1000,
+    })
 }
