@@ -9,8 +9,6 @@ import type { PlayerUserInfo } from '../model/types'
 import { getEncryptSubtitle } from './useCrypt'
 import useSubtitle from './useSubtitle'
 
-export { useHeartbeat, usePlayHistory, useVideoDetail } from './plugin/playHistory'
-
 /**
  * @description 控制播放器请求的用户信息始终为登录状态
  */

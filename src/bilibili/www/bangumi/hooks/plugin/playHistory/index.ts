@@ -1,2 +1,4 @@
-export { useBangumiDetail } from './useBangumiDetail'
-export { useCover } from './useCover'
+import { useBangumiDetail } from './useBangumiDetail'
+import { useCover } from './useCover'
+
+export default [useBangumiDetail, useCover]
