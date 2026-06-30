@@ -1,3 +1,3 @@
-import { useHistoryCursor, useHistorySearch } from './hooks'
+import { useHistoryClear, useHistoryCursor, useHistoryDelete, useHistorySearch } from './hooks'
 
-export default [useHistoryCursor, useHistorySearch]
+export default [useHistoryCursor, useHistoryClear, useHistoryDelete, useHistorySearch]

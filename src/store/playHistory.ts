@@ -67,6 +67,14 @@ export const historyDB = {
       hasMore: start + ps <= records.length,
     }
   },
+
+  async delete(kids: number[]): Promise<void> {
+    await db.history.bulkDelete(kids)
+  },
+
+  async clear(): Promise<void> {
+    await db.history.clear()
+  },
 }
 
 const defaultHistoryRecord: HistoryRecord = {

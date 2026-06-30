@@ -1,6 +1,7 @@
 import { toResult } from '@/constants/utils'
 import { historyDB } from '@/store/playHistory'
 import type { RequestFn } from '@/utils/ajax'
+import { onResponse } from '@/utils/ajax'
 import parseParams, { type ParamSchema } from '@/utils/parseParams'
 import type { CursorParam, HistoryCursor, HistorySearch, SearchParam } from './model/types'
 
@@ -70,4 +71,35 @@ export const useHistorySearch: RequestFn<'fetch'> = (request) => {
 
     res.json = result
   }
+}
+
+/**
+ * 删除一条或多条历史记录
+ */
+export const useHistoryDelete: RequestFn<'fetch', string> = (request) => {
+  if (!request.url.includes('/x/v2/history/delete')) return
+  const payload = new URLSearchParams(request.data)
+  const kidList = payload
+    .get('kid')
+    ?.split(',')
+    .map((item) => {
+      return Number(item.split('_')[1] ?? 0)
+    })
+
+  onResponse(request, async (res) => {
+    if (kidList?.length) await historyDB.delete(kidList)
+    res.json = toResult({}, 0, 'ok')
+  })
+}
+
+/**
+ * 清空历史记录
+ */
+export const useHistoryClear: RequestFn<'fetch', string> = (request) => {
+  if (!request.url.includes('/x/v2/history/clear')) return
+
+  onResponse(request, async (res) => {
+    await historyDB.clear()
+    res.json = toResult({}, 0, 'ok')
+  })
 }
