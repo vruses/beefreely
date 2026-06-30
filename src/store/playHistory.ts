@@ -20,51 +20,109 @@ export const historyDB = {
   },
 
   async getCursor(params: CursorParam) {
-    const collection = db.history
+    const { view_at, ps, type } = params
+    // 索引过滤：view_at < 指定时间，倒序
+    let collection = db.history
       .where('view_at')
-      .below(params.view_at || Infinity)
+      .below(view_at || Infinity)
       .reverse()
-    let records = await collection.toArray()
-    if (params.type !== 'all') records = records.filter((r) => r.history.business === params.type)
+      .limit(ps)
+
+    // 业务类型过滤下推
+    collection = collection.and((item) => {
+      if (type !== 'all' && type !== item.history.business) return false
+      return true
+    })
+
+    const records = await collection.toArray()
+
+    // 计算游标标记：下一页的截止时间
+    const lastItem = records.at(-1)
+    const nextViewAt = lastItem ? lastItem.view_at : 0
+
     return {
       list: records,
       cursor: {
-        business: params.type,
+        business: type,
         max: 0,
-        ps: records.length !== 0 ? params.ps : 0,
-        view_at: records.length !== 0 ? records[records.length - 1].view_at : 0,
+        ps: records.length ? ps : 0,
+        view_at: nextViewAt,
       },
     }
   },
 
   async search(params: SearchParam) {
-    const ps = 20
-    const kw = params.keyword.toLowerCase()
+    const pageSize = 20
+    const { pn, keyword, business, add_time_start, add_time_end, arc_min_duration, arc_max_duration, device_type } =
+      params
+    const kw = keyword.toLowerCase()
+    const skip = (pn - 1) * pageSize
+
     // 观看时间段，结束时间段为 0 时则返回全部时间段的记录
-    const collection = db.history
+    let collection = db.history
       .where('view_at')
-      .between(params.add_time_start, params.add_time_end || Infinity, true, true)
+      .between(add_time_start, add_time_end || Infinity, true, true)
       .reverse()
 
-    let records = await collection.toArray()
-    // 直播、视频、文章还是全部
-    if (params.business !== 'all') records = records.filter((r) => r.history.business === params.business)
-    // 筛选标题和作者名
-    if (params.keyword)
-      records = records.filter((r) => r.title.toLowerCase().includes(kw) || r.author_name.toLowerCase().includes(kw))
-    // 根据视频长度筛选，min=max=0 说明不需要筛选, min>(max=0),则说明 max 为 infinity
-    if (params.arc_min_duration || params.arc_max_duration) {
-      records = records.filter(
-        (r) => r.duration >= params.arc_min_duration && r.duration <= (params.arc_max_duration | Infinity)
-      )
+    // 叠加可下推的过滤条件，减少原始行数
+    collection = collection.and((item) => {
+      // 业务类型筛选，直播、视频、文章还是全部
+      if (business !== 'all' && item.history.business !== business) return false
+      // 设备类型筛选
+      if (device_type && item.history.dt !== device_type) return false
+      // 根据视频长度筛选，min=max=0 说明不需要筛选, min>(max=0),则说明 max 为 infinity
+      if (arc_min_duration || arc_max_duration) {
+        return item.duration >= arc_min_duration && item.duration <= (arc_max_duration || Infinity)
+      }
+      return true
+    })
+
+    // 无关键词时，直接 offset + limit 分页
+    if (!kw) {
+      const total = await collection.count()
+      const list = await collection.offset(skip).limit(pageSize).toArray()
+      return {
+        list,
+        total,
+        hasMore: skip + pageSize < total,
+      }
     }
-    // 根据观看设备筛选
-    if (params.device_type) records = records.filter((r) => r.history.dt === params.device_type)
-    const start = (params.pn - 1) * ps
+    // 有关键词模糊匹配：游标遍历收集，不加载全量数据
+    const matchedList: HistoryRecord[] = []
+    let skipped = 0
+
+    await collection.each((r) => {
+      const title = r.title.toLowerCase()
+      const author = r.author_name.toLowerCase()
+      const match = title.includes(kw) || author.includes(kw)
+
+      if (match) {
+        if (skipped < skip) {
+          skipped++
+        } else if (matchedList.length < pageSize) {
+          matchedList.push(r)
+        } else {
+          // 凑够一页，停止游标遍历
+          return false
+        }
+      }
+      // 继续下一条
+      return true
+    })
+
+    // 统计总匹配条数
+    const total = await collection
+      .and((item) => {
+        const title = item.title.toLowerCase()
+        const author = item.author_name.toLowerCase()
+        return title.includes(kw) || author.includes(kw)
+      })
+      .count()
+
     return {
-      list: records.slice(start, start + ps),
-      total: records.length,
-      hasMore: start + ps <= records.length,
+      list: matchedList,
+      total,
+      hasMore: skip + pageSize < total,
     }
   },
 
