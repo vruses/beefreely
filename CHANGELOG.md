@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-alpha.0](https://github.com/vruses/beefreely/compare/v2.2.6...v3.0.0-alpha.0) (2026-06-30)
+
+
+### Features
+
+* add AGENTS.md for project context ([b1643e4](https://github.com/vruses/beefreely/commit/b1643e4123ff2f04de83bbc98b3723eed939fc3d))
+* add bangumi module ([e483a80](https://github.com/vruses/beefreely/commit/e483a808a390e0e2cc3383edf5c05d02919eb5cc))
+* add playback progress tracking ([7ad6351](https://github.com/vruses/beefreely/commit/7ad6351fe5ac2d3bac187aeb00cb870809ef0854))
+* **core:** skip playurlSSRData initialization for Bangumi ([bbecf10](https://github.com/vruses/beefreely/commit/bbecf10ed6a3da1d4fa9d90727f80ebdee72bc38))
+* **history:** support deleting and clearing history records ([472b9af](https://github.com/vruses/beefreely/commit/472b9aff23a153f2f07a748337f50895d8067804))
+* implement  video watch history with infinite scroll and search ([295a726](https://github.com/vruses/beefreely/commit/295a72607745f70025614eec1154ae5bf575ba0b))
+* **live:** support live play records ([25bdc03](https://github.com/vruses/beefreely/commit/25bdc03acfbb050724f100f7a1f20e2b2f75d74e))
+* **opus:** add article read history support ([6d7c2d9](https://github.com/vruses/beefreely/commit/6d7c2d9a8e34dab2372c42898ec5335343b60f71))
+* **play-history:** support bangumi play records, refactor DB primary key to kid ([641c335](https://github.com/vruses/beefreely/commit/641c33534603224cc548ca859ddc3889f8f544f4))
+
+
+### Bug Fixes
+
+* chain response handlers for hooks with same url ([45f3c68](https://github.com/vruses/beefreely/commit/45f3c68663bbbc829fb6edfcfdfe2e2612570b29))
+* fix type inference ([5cc05f1](https://github.com/vruses/beefreely/commit/5cc05f1e002d61137c3174349bad0a52f9a220ca))
+* fix typo ([1cd2626](https://github.com/vruses/beefreely/commit/1cd26264f312060b91d847ab6fcb1657fe2d85c7))
+* fix unsafe subtitle processing ([17a2bb8](https://github.com/vruses/beefreely/commit/17a2bb8f0527607b99506f11dc73d955ed059e99))
+* **tsconfig:** update lib version to ES2022 ([2767148](https://github.com/vruses/beefreely/commit/27671484cabb45120389033990ae2df5b47de8f6))
+* update default types in RequestFn ([d6e4292](https://github.com/vruses/beefreely/commit/d6e42926934b6becbd42a49e6f4b7a677b4acba8))
+
 ### [2.2.6](https://github.com/vruses/beefreely/compare/v2.2.5...v2.2.6) (2026-05-12)
 
 
