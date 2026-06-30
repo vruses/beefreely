@@ -3,10 +3,10 @@ import ajaxHooker, { type Ajax } from '@/utils/ajax/ajax-hooker'
 /**
  * ajaxhooker 钩子函数类型
  * @template Type - 请求类型，支持 `'xhr'` 或 `'fetch'`
- * @template Payload - 请求参数类型，默认为 `unknown`
- * @template Result - 响应数据类型，默认为 `unknown`
+ * @template Payload - 请求参数类型，默认为 `any`
+ * @template Result - 响应数据类型，默认为 `any`
  */
-export type RequestFn<Type = unknown, Payload = unknown, Result = unknown> = (
+export type RequestFn<Type = unknown, Payload = any, Result = any> = (
   request: Type extends 'xhr' | 'fetch' ? Ajax.Request<Type, Payload, Result> : Ajax.BaseRequest
 ) => unknown
 
@@ -86,13 +86,11 @@ export default function onRequest(...args: RequestFn[]): void {
 /**
  * hook 的 url 相同时应使用此函数包装，避免重复覆盖 response 导致的副作用
  */
-export function onResponse<T extends Ajax.BaseRequest>(
+export function onResponse<T extends { response: ((...args: never[]) => unknown) | null }>(
   request: T,
-  // 根据 request 的类型推断响应数据类型是 Xhr 还是 Fetch
   handler: (res: Parameters<NonNullable<T['response']>>[0]) => unknown
 ): void {
   const prev = request.response
-  // @ts-expect-error
   request.response = async (res) => {
     if (prev) await prev(res)
     await handler(res)
