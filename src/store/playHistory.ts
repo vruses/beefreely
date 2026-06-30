@@ -91,40 +91,49 @@ const defaultHistoryRecord: HistoryRecord = {
   uri: '',
   badge: '',
   view_at: 0,
+  live_status: 0,
   // these data will update in useHeartbeat hook
   duration: 0,
   progress: 0,
   last_play_time: 0,
 }
-// TODO:
-// 直播页面：window.__SSR_INITIAL_STATE__
+
 /**
  * @description 将视频或文章 detail 转化成 historyRecord
  */
 function getSSRDetail(): HistoryRecord {
+  // hydration, 仅首屏 ssr
   const videoData = window?.__INITIAL_STATE__?.videoData
+  // pure ssr
   const articleData = window?.__INITIAL_STATE__?.detail
+  // 绝大部分 pure ssr，少部分官方直播间 采用 csr 如赛事
+  const liveData = window?.__NEPTUNE_IS_MY_WAIFU__?.roomInfoRes.data
 
-  if (!videoData && !articleData) {
+  if (!videoData && !articleData && !liveData) {
     return defaultHistoryRecord
   }
 
   return {
     ...defaultHistoryRecord,
-    kid: videoData?.aid ?? Number(articleData?.basic?.rid_str ?? 0) ?? 0,
+    kid: videoData?.aid ?? liveData?.room_info?.room_id ?? Number(articleData?.basic?.rid_str ?? 0) ?? 0,
     history: {
       ...defaultHistoryRecord.history,
       bvid: videoData?.bvid ?? '',
-      oid: videoData?.aid ?? Number(articleData?.basic?.rid_str ?? 0) ?? 0,
+      oid: videoData?.aid ?? liveData?.room_info.room_id ?? Number(articleData?.basic?.rid_str ?? 0) ?? 0,
       cid: videoData?.cid ?? 0,
     },
-    title: videoData?.title ?? articleData?.basic?.title ?? '',
-    cover: videoData?.pic ?? '',
-    author_name: videoData?.owner?.name ?? articleData?.modules?.[1].module_author?.name ?? '',
-    author_mid: videoData?.owner?.mid ?? Number(articleData?.basic?.uid ?? 0) ?? 0,
-    author_face: videoData?.owner?.face ?? '',
+    title: videoData?.title ?? articleData?.basic?.title ?? liveData?.room_info.title ?? '',
+    cover: videoData?.pic ?? liveData?.room_info.cover ?? '',
+    author_name:
+      videoData?.owner?.name ??
+      articleData?.modules?.[1].module_author?.name ??
+      liveData?.anchor_info.base_info.uname ??
+      '',
+    author_mid: videoData?.owner?.mid ?? liveData?.room_info.uid ?? Number(articleData?.basic?.uid ?? 0) ?? 0,
+    author_face: videoData?.owner?.face ?? liveData?.anchor_info.base_info.face ?? '',
     videos: videoData?.videos ?? 1,
     tag_name: videoData?.tag_name ?? '',
+    live_status: liveData?.room_info.live_status ?? 0,
   }
 }
 

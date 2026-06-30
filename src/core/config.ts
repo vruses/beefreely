@@ -1,3 +1,4 @@
+import live from '@/bilibili/live'
 import search from '@/bilibili/search'
 import shared from '@/bilibili/shared'
 import space from '@/bilibili/space'
@@ -39,6 +40,10 @@ export const domainConfig = {
       hook: [...space],
     },
     // 直播页
-    { name: 'live', hook: [], action: [startDmIntercept] },
+    {
+      name: 'live',
+      hook: [...live],
+      action: [startDmIntercept],
+    },
   ],
 }

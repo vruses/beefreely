@@ -1,3 +1,5 @@
+import type { ResultType } from '@/types/response'
+
 /** 视频详细信息 */
 export interface VideoDetailView {
   aid: number
@@ -51,10 +53,29 @@ export interface OpusDetail {
   }
 }
 
+/** 直播详细信息 */
+export interface LiveDetail {
+  room_info: {
+    cover: string
+    live_id: number
+    live_status: number
+    uid: number
+    room_id: number
+    title: string
+  }
+  anchor_info: {
+    base_info: {
+      uname: string
+      face: string
+    }
+  }
+}
+
 declare global {
   interface Window {
     player?: unknown // Use a more specific type if you know it
     __INITIAL_STATE__?: { videoData: VideoDetailView; detail: OpusDetail }
+    __NEPTUNE_IS_MY_WAIFU__?: { roomInfoRes: ResultType<LiveDetail> }
     /**
      * 视频页首次加载的视频信息，后续切换视频不再变更
      * 从 __INITIAL_STATE__.videoData 读取

@@ -47,6 +47,8 @@ export interface HistoryRecord {
   /** 通过 uri 而非 bvid 跳转至番剧 */
   uri?: string
 
+  // live 专属
+  live_status: number
   // 多余的字段也直接并入一起方便处理
 
   /** 上次播放时间 */
