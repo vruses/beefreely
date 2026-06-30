@@ -1,4 +1,4 @@
-type WsSend = (this: WebSocket, data: string | ArrayBufferLike | Blob | ArrayBufferView) => void
+type WsSend = (this: WebSocket, data: string | Blob | BufferSource) => void
 
 interface PacketData {
   uid: number
@@ -45,7 +45,7 @@ export function useWsIntercept() {
 
     wsOriginalSend = WebSocket.prototype.send
 
-    WebSocket.prototype.send = function (data: string | ArrayBufferLike | Blob | ArrayBufferView): unknown {
+    WebSocket.prototype.send = function (data: string | Blob | BufferSource): unknown {
       if (data instanceof ArrayBuffer) {
         const view = new DataView(data)
 
