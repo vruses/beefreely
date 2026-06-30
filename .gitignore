@@ -12,6 +12,8 @@ dist-ssr
 *.local
 dist
 .claude/memories
+.playwright-cli/**
+.playwright/**
 
 # Editor directories and files
 .vscode/*
