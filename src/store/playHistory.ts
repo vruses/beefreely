@@ -76,7 +76,7 @@ const defaultHistoryRecord: HistoryRecord = {
     oid: 0,
     cid: 0,
     part: '',
-    business: '',
+    business: 'archive',
     dt: 1,
     epid: 0,
   },

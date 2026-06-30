@@ -13,6 +13,7 @@ export const useHistoryReport: RequestFn<'fetch'> = (request) => {
     const liveStatus = playerMetaStore.currentVideoMeta.live_status
     playerMetaStore.currentVideoMeta.badge = liveStatus ? '直播中' : '未开播'
     playerMetaStore.currentVideoMeta.history.business = 'live'
+    //@ts-expect-error
     const _meta = toRaw(playerMetaStore.currentVideoMeta)
 
     // if (meta.kid)
