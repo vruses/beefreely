@@ -2,13 +2,14 @@
 // ==UserScript==
 // @name         ajaxHooker
 // @author       cxxjackie
-// @version      1.4.7
+// @version      1.4.8
 // @supportURL   https://bbs.tampermonkey.net.cn/thread-3284-1-1.html
 // @license      GNU LGPL-3.0
 // ==/UserScript==
 
-const ajaxHooker = (() => {
-  const version = '1.4.7'
+const ajaxHooker = (function () {
+  'use strict'
+  const version = '1.4.8'
   const hookInst = {
     hookFns: [],
     filters: [],
@@ -64,7 +65,7 @@ const ajaxHooker = (() => {
       configurable: true,
       enumerable: true,
       writable: true,
-      value,
+      value: value,
     })
   }
   function parseHeaders(obj) {
@@ -102,12 +103,10 @@ const ajaxHooker = (() => {
       this.request = request
       this.requestClone = { ...this.request }
     }
-
     _recoverRequestKey(key) {
       if (key in this.requestClone) this.request[key] = this.requestClone[key]
       else delete this.request[key]
     }
-
     shouldFilter(filters) {
       const { type, url, method, async } = this.request
       return (
@@ -125,7 +124,6 @@ const ajaxHooker = (() => {
         })
       )
     }
-
     waitForRequestKeys() {
       if (!this.request.async) {
         win.__ajaxHooker.hookInsts.forEach(({ hookFns, filters }) => {
@@ -160,7 +158,6 @@ const ajaxHooker = (() => {
       })
       return Promise.all(promises)
     }
-
     waitForResponseKeys(response) {
       const responseKeys = this.request.type === 'xhr' ? xhrResponses : fetchResponses
       if (!this.request.async) {
@@ -194,9 +191,7 @@ const ajaxHooker = (() => {
   const proxyHandler = {
     get(target, prop) {
       const descriptor = getDescriptor(target, prop)
-      if (descriptor && !descriptor.configurable && !descriptor.writable && !descriptor.get) {
-        return target[prop]
-      }
+      if (descriptor && !descriptor.configurable && !descriptor.writable && !descriptor.get) return target[prop]
       const ah = target.__ajaxHooker
       if (ah && ah.proxyProps) {
         if (prop in ah.proxyProps) {
@@ -211,9 +206,7 @@ const ajaxHooker = (() => {
     },
     set(target, prop, value) {
       const descriptor = getDescriptor(target, prop)
-      if (descriptor && !descriptor.configurable && !descriptor.writable && !descriptor.set) {
-        return true
-      }
+      if (descriptor && !descriptor.configurable && !descriptor.writable && !descriptor.set) return true
       const ah = target.__ajaxHooker
       if (ah && ah.proxyProps && prop in ah.proxyProps) {
         const pDescriptor = ah.proxyProps[prop]
@@ -226,7 +219,8 @@ const ajaxHooker = (() => {
   }
   class XhrHooker {
     constructor(xhr) {
-      Object.assign(this, {
+      const ah = this
+      Object.assign(ah, {
         originalXhr: xhr,
         proxyXhr: new Proxy(xhr, proxyHandler),
         resThenable: new SyncThenable(),
@@ -234,16 +228,16 @@ const ajaxHooker = (() => {
         proxyEvents: {},
       })
       xhr.addEventListener('readystatechange', (e) => {
-        if (this.proxyXhr.readyState === 4 && this.request && typeof this.request.response === 'function') {
+        if (ah.proxyXhr.readyState === 4 && ah.request && typeof ah.request.response === 'function') {
           const response = {
-            finalUrl: this.proxyXhr.responseURL,
-            status: this.proxyXhr.status,
-            responseHeaders: parseHeaders(this.proxyXhr.getAllResponseHeaders()),
+            finalUrl: ah.proxyXhr.responseURL,
+            status: ah.proxyXhr.status,
+            responseHeaders: parseHeaders(ah.proxyXhr.getAllResponseHeaders()),
           }
           const tempValues = {}
           for (const key of xhrResponses) {
             try {
-              tempValues[key] = this.originalXhr[key]
+              tempValues[key] = ah.originalXhr[key]
             } catch (err) {}
             defineProp(
               response,
@@ -257,9 +251,9 @@ const ajaxHooker = (() => {
               }
             )
           }
-          this.resThenable = new AHRequest(this.request).waitForResponseKeys(response).then(() => {
+          ah.resThenable = new AHRequest(ah.request).waitForResponseKeys(response).then(() => {
             for (const key of xhrResponses) {
-              this.proxyProps[key] = {
+              ah.proxyProps[key] = {
                 get: () => {
                   if (!(key in response)) response[key] = tempValues[key]
                   return response[key]
@@ -268,22 +262,21 @@ const ajaxHooker = (() => {
             }
           })
         }
-        this.dispatchEvent(e)
+        ah.dispatchEvent(e)
       })
-      xhr.addEventListener('load', (e) => this.dispatchEvent(e))
-      xhr.addEventListener('loadend', (e) => this.dispatchEvent(e))
+      xhr.addEventListener('load', (e) => ah.dispatchEvent(e))
+      xhr.addEventListener('loadend', (e) => ah.dispatchEvent(e))
       for (const evt of xhrAsyncEvents) {
-        const onEvt = `on${evt}`
-        this.proxyProps[onEvt] = {
-          get: () => this.proxyEvents[onEvt] || null,
-          set: (val) => this.addEvent(onEvt, val),
+        const onEvt = 'on' + evt
+        ah.proxyProps[onEvt] = {
+          get: () => ah.proxyEvents[onEvt] || null,
+          set: (val) => ah.addEvent(onEvt, val),
         }
       }
       for (const method of ['setRequestHeader', 'addEventListener', 'removeEventListener', 'open', 'send']) {
-        this.proxyProps[method] = { value: this[method] }
+        ah.proxyProps[method] = { value: ah[method] }
       }
     }
-
     toJSON() {} // Converting circular structure to JSON
     addEvent(type, event) {
       if (type.startsWith('on')) {
@@ -295,7 +288,6 @@ const ajaxHooker = (() => {
         this.proxyEvents[type].add(event)
       }
     }
-
     removeEvent(type, event) {
       if (type.startsWith('on')) {
         this.proxyEvents[type] = null
@@ -304,7 +296,6 @@ const ajaxHooker = (() => {
         this.proxyEvents[type] && this.proxyEvents[type].delete(event)
       }
     }
-
     dispatchEvent(e) {
       e.stopImmediatePropagation = stopImmediatePropagation
       defineProp(e, 'target', () => this.proxyXhr)
@@ -315,17 +306,15 @@ const ajaxHooker = (() => {
           this.resThenable.then(() => !e.ajaxHooker_isStopped && fn.call(this.proxyXhr, e))
         })
       if (e.ajaxHooker_isStopped) return
-      const onEvent = this.proxyEvents[`on${e.type}`]
+      const onEvent = this.proxyEvents['on' + e.type]
       onEvent && this.resThenable.then(onEvent.bind(this.proxyXhr, e))
     }
-
     setRequestHeader(header, value) {
       this.originalXhr.setRequestHeader(header, value)
       if (!this.request) return
       const headers = this.request.headers
       headers[header] = header in headers ? `${headers[header]}, ${value}` : value
     }
-
     addEventListener(...args) {
       if (xhrAsyncEvents.includes(args[0])) {
         this.addEvent(args[0], args[1])
@@ -333,7 +322,6 @@ const ajaxHooker = (() => {
         this.originalXhr.addEventListener(...args)
       }
     }
-
     removeEventListener(...args) {
       if (xhrAsyncEvents.includes(args[0])) {
         this.removeEvent(args[0], args[1])
@@ -341,7 +329,6 @@ const ajaxHooker = (() => {
         this.originalXhr.removeEventListener(...args)
       }
     }
-
     open(method, url, async = true, ...args) {
       this.request = {
         type: 'xhr',
@@ -360,16 +347,16 @@ const ajaxHooker = (() => {
       })
       return this.originalXhr.open(method, url, async, ...args)
     }
-
     send(data) {
-      const xhr = this.originalXhr
-      const request = this.request
+      const ah = this
+      const xhr = ah.originalXhr
+      const request = ah.request
       if (!request) return xhr.send(data)
       request.data = data
       new AHRequest(request).waitForRequestKeys().then(() => {
         if (request.abort) {
           if (typeof request.response === 'function') {
-            Object.assign(this.proxyProps, {
+            Object.assign(ah.proxyProps, {
               responseURL: { value: request.url },
               readyState: { value: 4 },
               status: { value: 200 },
@@ -378,7 +365,7 @@ const ajaxHooker = (() => {
             xhrAsyncEvents.forEach((evt) => xhr.dispatchEvent(new Event(evt)))
           }
         } else {
-          xhr.open(request.method, request.url, request.async, ...this.openArgs)
+          xhr.open(request.method, request.url, request.async, ...ah.openArgs)
           for (const header in request.headers) {
             xhr.setRequestHeader(header, request.headers[header])
           }
@@ -415,7 +402,7 @@ const ajaxHooker = (() => {
       init.headers = init.headers || {}
       const request = {
         type: 'fetch',
-        url,
+        url: url,
         method: init.method.toUpperCase(),
         abort: false,
         headers: parseHeaders(init.headers),
@@ -463,16 +450,20 @@ const ajaxHooker = (() => {
             status: res.status,
             responseHeaders: parseHeaders(res.headers),
           }
-          fetchResponses.forEach(
-            (key) =>
-              (res[key] = function () {
-                if (key in response) return Promise.resolve(response[key])
-                return resProto[key].call(this).then((val) => {
-                  response[key] = val
-                  return req.waitForResponseKeys(response).then(() => (key in response ? response[key] : val))
+          if (res.ok) {
+            fetchResponses.forEach(
+              (key) =>
+                (res[key] = function () {
+                  if (key in response) return Promise.resolve(response[key])
+                  return resProto[key].call(this).then((val) => {
+                    response[key] = val
+                    return req.waitForResponseKeys(response).then(() => (key in response ? response[key] : val))
+                  })
                 })
-              })
-          )
+            )
+          } else {
+            catchError(request.response, response)
+          }
         }
         resolve(res)
       }, reject)
@@ -507,7 +498,6 @@ const ajaxHooker = (() => {
       }
       return Reflect.apply(this, thisArg, args)
     }
-
     apply(thisArg, args) {
       if (thisArg && thisArg.__ajaxHooker && thisArg.__ajaxHooker.proxyXhr === thisArg) {
         thisArg = thisArg.__ajaxHooker.originalXhr
