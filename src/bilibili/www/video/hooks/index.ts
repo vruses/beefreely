@@ -31,7 +31,7 @@ export const usePlayer: RequestFn<'xhr'> = (request) => {
  */
 export const usePlayurl: RequestFn<'xhr'> = (request) => {
   // inject custom qsParams to fetch higher-quality CDN video
-  if (!request.url.includes('api.bilibili.com/x/player/wbi/playurl')) return
+  if (!request.url.includes('/x/player/wbi/playurl')) return
   // Remove w_rid & wts, set try_look=1 and qn=80, then re-WbiSign
   const qsParams = Object.fromEntries(new URLSearchParams(request.url.split(/\?|&w_rid/)[1]).entries())
   Reflect.set(qsParams, 'qn', 80) // qualityNumber->1080p
@@ -46,6 +46,21 @@ export const usePlayurl: RequestFn<'xhr'> = (request) => {
       },
       configurable: true,
     })
+  })
+}
+
+/**
+ * 对部分视频下载工具提供 cdn 接口数据
+ */
+export const usePlayurl2: RequestFn<'xhr'> = (request) => {
+  if (!request.url.includes('/x/player/playurl')) return
+  // 还原window.__playinfo__对象
+  onResponse(request, async (res) => {
+    if (!window.__playinfo__) return
+    // while responseType = json
+    res.response = window.__playinfo__
+    // while responseType = text
+    res.responseText = JSON.stringify(window.__playinfo__)
   })
 }
 

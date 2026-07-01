@@ -73,6 +73,8 @@ export interface LiveDetail {
 
 declare global {
   interface Window {
+    /** video global config */
+    __playinfo__: any
     player?: unknown // Use a more specific type if you know it
     __INITIAL_STATE__?: { videoData: VideoDetailView; detail: OpusDetail }
     __NEPTUNE_IS_MY_WAIFU__?: { roomInfoRes: ResultType<LiveDetail> }
