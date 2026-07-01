@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-alpha.1](https://github.com/vruses/beefreely/compare/v3.0.0-alpha.0...v3.0.0-alpha.1) (2026-07-01)
+
+
+### Features
+
+* **video:** add third-party video download tool cdn support ([ec08249](https://github.com/vruses/beefreely/commit/ec08249fa4fcd55102b83a8611b1e420799185e1))
+
+
+### Bug Fixes
+
+* **utils:** fix ts error ([3111a11](https://github.com/vruses/beefreely/commit/3111a114f7726d3d4744fd6c305812e37b2f1fda))
+
 ## [3.0.0-alpha.0](https://github.com/vruses/beefreely/compare/v2.2.6...v3.0.0-alpha.0) (2026-06-30)
 
 
