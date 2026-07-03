@@ -22,17 +22,15 @@ export const historyDB = {
   async getCursor(params: CursorParam) {
     const { view_at, ps, type } = params
     // 索引过滤：view_at < 指定时间，倒序
-    let collection = db.history
+    const collection = db.history
       .where('view_at')
       .below(view_at || Infinity)
       .reverse()
       .limit(ps)
-
-    // 业务类型过滤下推
-    collection = collection.and((item) => {
-      if (type !== 'all' && type !== item.history.business) return false
-      return true
-    })
+      .and((item) => {
+        if (type !== 'all' && type !== item.history.business) return false
+        return true
+      })
 
     const records = await collection.toArray()
 
@@ -59,37 +57,40 @@ export const historyDB = {
     const skip = (pn - 1) * pageSize
 
     // 观看时间段，结束时间段为 0 时则返回全部时间段的记录
-    let collection = db.history
+    const collection = db.history
       .where('view_at')
       .between(add_time_start, add_time_end || Infinity, true, true)
       .reverse()
-
-    // 叠加可下推的过滤条件，减少原始行数
-    collection = collection.and((item) => {
-      // 业务类型筛选，直播、视频、文章还是全部
-      if (business !== 'all' && item.history.business !== business) return false
-      // 设备类型筛选
-      if (device_type && item.history.dt !== device_type) return false
-      // 根据视频长度筛选，min=max=0 说明不需要筛选, min>(max=0),则说明 max 为 infinity
-      if (arc_min_duration || arc_max_duration) {
-        return item.duration >= arc_min_duration && item.duration <= (arc_max_duration || Infinity)
-      }
-      return true
-    })
-
+      // 叠加可下推的过滤条件，减少原始行数
+      .and((item) => {
+        // 业务类型筛选，直播、视频、文章还是全部
+        if (business !== 'all' && item.history.business !== business) return false
+        // 设备类型筛选
+        if (device_type && item.history.dt !== device_type) return false
+        // 根据视频长度筛选，min=max=0 说明不需要筛选, min>(max=0),则说明 max 为 infinity
+        if (arc_min_duration || arc_max_duration) {
+          return item.duration >= arc_min_duration && item.duration <= (arc_max_duration || Infinity)
+        }
+        return true
+      })
     // 无关键词时，直接 offset + limit 分页
     if (!kw) {
-      const total = await collection.count()
-      const list = await collection.offset(skip).limit(pageSize).toArray()
+      const list = await collection
+        .offset(skip)
+        .limit(pageSize + 1) // 多取一条判断是否有下一页
+        .toArray()
+      const hasMore = list.length > pageSize
+      if (hasMore) list.pop()
       return {
         list,
-        total,
-        hasMore: skip + pageSize < total,
+        total: 0,
+        hasMore,
       }
     }
     // 有关键词模糊匹配：游标遍历收集，不加载全量数据
     const matchedList: HistoryRecord[] = []
     let skipped = 0
+    let hasMore = false
 
     await collection.each((r) => {
       const title = r.title.toLowerCase()
@@ -99,9 +100,11 @@ export const historyDB = {
       if (match) {
         if (skipped < skip) {
           skipped++
-        } else if (matchedList.length < pageSize) {
+        } else if (matchedList.length < pageSize + 1) {
           matchedList.push(r)
         } else {
+          hasMore = matchedList.length > pageSize
+          if (hasMore) matchedList.pop()
           // 凑够一页，停止游标遍历
           return false
         }
@@ -110,19 +113,10 @@ export const historyDB = {
       return true
     })
 
-    // 统计总匹配条数
-    const total = await collection
-      .and((item) => {
-        const title = item.title.toLowerCase()
-        const author = item.author_name.toLowerCase()
-        return title.includes(kw) || author.includes(kw)
-      })
-      .count()
-
     return {
       list: matchedList,
-      total,
-      hasMore: skip + pageSize < total,
+      total: 0,
+      hasMore,
     }
   },
 
