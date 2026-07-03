@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-alpha.2](https://github.com/vruses/beefreely/compare/v3.0.0-alpha.1...v3.0.0-alpha.2) (2026-07-03)
+
+
+### Bug Fixes
+
+* **video:** fix watch history did not restore the correct episode for video selection ([1304ee5](https://github.com/vruses/beefreely/commit/1304ee5d5dfebed9b55a2080d3b7a6749f541260))
+
 ## [3.0.0-alpha.1](https://github.com/vruses/beefreely/compare/v3.0.0-alpha.0...v3.0.0-alpha.1) (2026-07-01)
 
 

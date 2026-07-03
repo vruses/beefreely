@@ -1,7 +1,7 @@
 {
   "name": "beefreely",
   "type": "module",
-  "version": "3.0.0-alpha.1",
+  "version": "3.0.0-alpha.2",
   "private": true,
   "author": "<vurses@qq.com>",
   "license": "MIT",
