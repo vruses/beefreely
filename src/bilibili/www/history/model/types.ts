@@ -17,7 +17,10 @@ export interface HistoryRecord {
     oid: number
     bvid: string
     cid: number
+    // 分p视频集数
+    page: number
     part: string
+
     /** 业务类型，对应标签，记录筛选条件之一 */
     business: 'archive' | 'live' | 'article' | ''
     /** 使用的观看设备，这里应恒为 1，也就是 PC */

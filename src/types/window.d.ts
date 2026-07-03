@@ -8,15 +8,37 @@ export interface VideoDetailView {
   title: string
   pic: string
   duration: number
+  /** videos>1时为分p视频 */
   videos: number
   tag_name: string
+  /** 是否合集 */
+  is_story_play: number
   /** 视频作者信息 */
   owner: {
     face: string
     mid: number
     name: string
   }
-  pages: Array<unknown>
+  /** 视频合集信息 */
+  ugc_season?: {
+    sections: [episodes: Array<unknown>]
+  }
+  pages: Array<{
+    cid: number
+    page: number
+    from: string
+    part: string
+    duration: number
+    vid: string
+    weblink: string
+    dimension: {
+      width: number
+      height: number
+      rotate: number
+    }
+    first_frame: string
+    ctime: number
+  }>
 }
 
 /** 文章详细信息 */

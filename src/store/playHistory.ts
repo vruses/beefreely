@@ -135,6 +135,7 @@ const defaultHistoryRecord: HistoryRecord = {
     bvid: '',
     oid: 0,
     cid: 0,
+    page: 1,
     part: '',
     business: 'archive',
     dt: 1,
