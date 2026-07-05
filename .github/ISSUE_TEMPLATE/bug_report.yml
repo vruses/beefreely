@@ -1,0 +1,107 @@
+name: 🐛 Bug 报告 / Bug Report
+description: 提交一个问题反馈 / Report a bug or unexpected behavior
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 在提交前请确认 / Before Submitting
+
+        - 已搜索 [现有 issues](https://github.com/vruses/beefreely/issues) 确认没有重复提交
+        - 已使用**最新版本**脚本复现问题
+        - beefreely 通过拦截请求实现功能，确认已**暂时禁用其他接口拦截相关脚本/插件**并确认问题仍然存在
+
+  - type: input
+    id: version
+    attributes:
+      label: 脚本版本 / Script Version
+      placeholder: e.g. 3.0.0-alpha.2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: script-manager
+    attributes:
+      label: 脚本管理器 / Script Manager
+      options:
+        - Tampermonkey
+        - Violentmonkey
+        - Greasemonkey
+        - 其他 / Other
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: 浏览器及版本 / Browser & Version
+      placeholder: e.g. Chrome 130, Edge 130, Firefox 132
+    validations:
+      required: true
+
+  - type: textarea
+    id: page-url
+    attributes:
+      label: 触发页面 / Triggering URL
+      description: 请粘贴完整的 Bilibili 页面链接
+      placeholder: https://www.bilibili.com/video/BV...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤 / Steps to Reproduce
+      description: 一步一步说明如何复现该问题
+      placeholder: |
+        1. 打开 ...
+        2. 点击 ...
+        3. 观察到 ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为 / Expected Behavior
+      description: 正常情况下应该发生什么？
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为 / Actual Behavior
+      description: 实际发生了什么？（截图或录屏会有帮助）
+    validations:
+      required: true
+
+  - type: textarea
+    id: console
+    attributes:
+      label: 控制台输出 / Browser Console Output
+      description: 打开 F12 → Console，粘贴相关错误信息（如果有）
+      render: shell
+
+  - type: textarea
+    id: conflicting-plugins
+    attributes:
+      label: 其他插件/脚本 / Other Plugins or Scripts
+      description: |
+        请列出你可能安装的、与 Bilibili 相关的其他脚本或插件。
+        如果你不确定是否存在冲突，可以先**暂时禁用其他脚本/插件**后再测试一次。
+      placeholder: |
+        e.g.
+        - Bilibili-Evolved
+        - uBlock Origin
+        - 其他 Bilibili 相关油猴脚本
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: 确认 / Confirmations
+      options:
+        - label: 我确认已安装最新版本脚本
+          required: true

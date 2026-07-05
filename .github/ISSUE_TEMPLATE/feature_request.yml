@@ -1,0 +1,44 @@
+name: ✨ 功能请求 / Feature Request
+description: 提议一个新功能或改进 / Suggest a new feature or enhancement
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 在提交前请确认 / Before Submitting
+
+        - 已搜索 [现有 issues](https://github.com/vruses/beefreely/issues) 确认没有重复提交
+        - 该功能与**未登录体验**相关（项目定位是让未登录用户获得接近登录的体验）
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题背景 / Problem Background
+      description: 这个功能要解决什么问题？目前未登录时哪个环节体验不好？
+      placeholder: 当我在未登录状态下...（描述现状）
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 期望方案 / Proposed Solution
+      description: 你希望 beefreely 如何处理？
+      placeholder: 建议拦截 ... 接口，返回 ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: api-info
+    attributes:
+      label: 相关 API 信息 / Related API Info
+      description: 如果知道相关的 Bilibili API 端点或接口，请在此说明（可选）
+      placeholder: e.g. https://api.bilibili.com/x/...
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: 范围确认 / Scope Confirmation
+      options:
+        - label: 该功能仅与**未登录状态**下的体验改善相关
+          required: true
