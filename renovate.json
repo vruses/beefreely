@@ -1,6 +1,26 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ]
+  "extends": ["config:recommended", "schedule:weekly", "group:allNonMajor"],
+  "labels": ["dependencies"],
+  "rangeStrategy": "bump",
+  "minimumReleaseAge": "24 hours",
+  "packageRules": [
+    {
+      "matchDepTypes": ["peerDependencies"],
+      "enabled": false
+    },
+    {
+      "groupName": "build",
+      "matchPackageNames": ["vite", "vite-plugin-monkey", "typescript", "@types/node"]
+    },
+    {
+      "groupName": "lint",
+      "matchPackageNames": ["@biomejs/biome", "lefthook"]
+    },
+    {
+      "groupName": "runtime-deps",
+      "matchPackageNames": ["@vue/reactivity", "dexie", "lodash-es", "@types/lodash-es", "protobufjs", "ts-md5"]
+    }
+  ],
+  "ignoreDeps": ["standard-version", "type-fest"]
 }
