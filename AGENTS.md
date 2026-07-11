@@ -13,14 +13,17 @@ A Tampermonkey/Violentmonkey userscript that intercepts Bilibili (bilibili.com) 
 
 | Category | Tech |
 |---|---|
-| Language | TypeScript 5.9 (strict) |
-| Build | Vite 6 + `vite-plugin-monkey 5` |
+| Language | TypeScript (strict) |
+| Build | Vite + `vite-plugin-monkey 5` |
 | Package manager | pnpm |
-| Lint/Format | Biome 2.2 (single quotes, no semicolons, 120 char width) |
+| Lint/Format | Biome (single quotes, no semicolons, 120 char width) |
 | Git hooks | Lefthook (pre-commit: `pnpm lint`) |
 | Reactivity | `@vue/reactivity` (loaded via CDN at runtime) |
 | Protobuf | `protobufjs` (loaded via CDN at runtime) |
 | Hashing | `ts-md5` |
+| IndexedDB | `dexie` |
+| Utilities | `lodash-es` |
+| Types | `type-fest` |
 | Versioning | `standard-version` (conventional commits) |
 
 ## Build Commands
@@ -33,44 +36,95 @@ pnpm lint         # biome check
 pnpm lint:fix     # biome check --fix
 pnpm format       # biome format --write
 pnpm dev          # vite dev server
+pnpm preview      # vite preview
+pnpm release      # standard-version (bump version + changelog)
 ```
 
 ## Project Structure
 
 ```
 src/
-├── main.ts                  # Entry point, imports @/core
+├── main.ts                      # Entry point, imports @/core
 ├── core/
-│   ├── index.ts             # Main logic: login detection, subdomain routing, hook injection
-│   ├── config.ts            # domainConfig: shared hooks + per-subdomain children + blacklist
-│   └── lifecycle.ts         # Document readyState lifecycle manager
+│   ├── index.ts                 # Main logic: login detection, subdomain routing, hook injection
+│   ├── config.ts                # domainConfig: shared hooks + per-subdomain children + blacklist
+│   └── lifecycle.ts             # Document readyState lifecycle manager
 ├── constants/
-│   ├── index.ts             # Re-exports sign.ts (img_key, sub_key)
-│   ├── sign.ts              # WBI image/sub key extraction from localStorage
-│   └── utils.ts             # toResult() wrapper for Bilibili API response envelope
+│   ├── index.ts                 # Re-exports sign.ts (img_key, sub_key)
+│   ├── sign.ts                  # WBI image/sub key extraction from localStorage
+│   └── utils.ts                 # toResult() wrapper for Bilibili API response envelope
 ├── store/
-│   └── user.ts              # Reactive isLogin store (watches for real login → clears all hooks)
+│   ├── user.ts                  # Reactive isLogin store (watches for real login → clears all hooks)
+│   └── playHistory.ts           # Dexie-backed IndexedDB store for local video watch history
 ├── types/
-│   ├── response.ts          # ResultType<T> generic
-│   └── window.d.ts          # Window type augmentations
+│   ├── response.ts              # ResultType<T> generic
+│   └── window.d.ts              # Window type augmentations
 ├── utils/
 │   ├── ajax/
-│   │   ├── index.ts         # RequestHooker singleton wrapping ajaxHooker
-│   │   └── ajax-hooker.d.ts # Type defs for ajax-hooker library
+│   │   ├── index.ts             # RequestHooker singleton wrapping ajaxHooker
+│   │   └── ajax-hooker.d.ts     # Type defs for ajax-hooker library
 │   ├── websocket/
-│   │   └── intercept.ts     # WebSocket send() monkey-patch for live danmaku
-│   ├── wbi-sign.ts          # WBI signature generation (encWbi)
-│   └── web-key.ts           # Key extraction from wbi URLs
-└── bilibili/                # Per-page/subdomain hook modules
-    ├── shared/              # Applied on ALL subdomains
-    ├── www/                 # www.bilibili.com
-    │   ├── index.ts         # Aggregates history + video hooks
-    │   ├── history/         # useHistory — mock history list
-    │   └── video/
-    ├── search/              # search.bilibili.com — fixes broken search URL
-    ├── space/               # space.bilibili.com — mock user profile
-    ├── live/                # live.bilibili.com — WebSocket danmaku intercept
-    └── t/                   # t.bilibili.com — dynamic pages
+│   │   └── intercept.ts         # WebSocket send() monkey-patch for live danmaku
+│   ├── wbi-sign.ts              # WBI signature generation (encWbi)
+│   ├── web-key.ts               # Key extraction from wbi URLs
+│   └── parseParams.ts           # Generic URLSearchParams parser with schema
+├── bilibili/                    # Per-page/subdomain hook modules
+│   ├── shared/                  # Applied on ALL subdomains
+│   │   ├── index.ts             # [useNav, useReply, useReplyShareUrl]
+│   │   ├── hooks.ts             # useNav — mock login state; useReply — strip credentials; useReplyShareUrl — fix share URI
+│   │   └── model/
+│   │       ├── constants.ts     # mockUserInfoResult
+│   │       └── types.ts
+│   ├── www/                     # www.bilibili.com
+│   │   ├── index.ts             # Aggregates history + video + bangumi + opus
+│   │   ├── history/             # Local watch history (IndexedDB-backed)
+│   │   │   ├── index.ts         # [useHistoryCursor, useHistoryClear, useHistoryDelete, useHistorySearch]
+│   │   │   ├── hooks.ts         # Cursor pagination, search, delete, clear
+│   │   │   └── model/types.ts   # HistoryRecord, CursorParam, SearchParam types
+│   │   ├── video/               # Video player hooks
+│   │   │   ├── index.ts         # [usePlayer, usePlayurl, usePlayurl2, useRelation, useArchiveRelation, useDmView(), ...playHistory]
+│   │   │   ├── apiConfig.ts     # Endpoint URL constants (placeholder)
+│   │   │   ├── hooks/
+│   │   │   │   ├── index.ts     # usePlayer, usePlayurl, usePlayurl2, useRelation, useArchiveRelation, useDmView
+│   │   │   │   ├── useCrypt.ts  # Subtitle encryption utilities
+│   │   │   │   ├── useSubtitle.ts # Subtitle hook factory
+│   │   │   │   └── plugin/playHistory/  # Video watch history reporting
+│   │   │   │       ├── index.ts         # [useHeartbeat, usePlayHistory, useVideoDetail]
+│   │   │   │       ├── useHeartbeat.ts  # Heartbeat reporting
+│   │   │   │       ├── usePlayHistory.ts # Play history list reporting
+│   │   │   │       └── useVideoDetail.ts # Video detail for history
+│   │   │   └── model/
+│   │   │       ├── constants.ts    # relationResult, archiveRelationResult
+│   │   │       ├── DmWebView.ts    # Protobuf DmWebView definition
+│   │   │       └── types.ts        # PlayerUserInfo
+│   │   ├── bangumi/               # Bangumi (番剧) hooks
+│   │   │   ├── index.ts           # [useBangumiLogin, ...playHistory]
+│   │   │   ├── hooks/
+│   │   │   │   ├── index.ts       # useBangumiLogin — sync login status for playview
+│   │   │   │   └── plugin/playHistory/
+│   │   │   │       ├── index.ts   # [useBangumiDetail, useCover]
+│   │   │   │       ├── useBangumiDetail.ts
+│   │   │   │       └── useCover.ts
+│   │   │   └── model/types.ts     # Playview type
+│   │   └── opus/                  # Opus (图文/动态) hooks
+│   │       ├── index.ts           # [...readHistory]
+│   │       └── hooks/plugin/readHistory/
+│   │           ├── index.ts       # [useHistoryReport]
+│   │           └── useHistoryReport.ts
+│   ├── search/                    # search.bilibili.com
+│   │   ├── index.ts               # [useSearch]
+│   │   └── hooks.ts               # useSearch — fix broken search API URL
+│   ├── space/                     # space.bilibili.com
+│   │   ├── index.ts               # [useMyInfo]
+│   │   ├── hooks.ts               # useMyInfo — mock user profile
+│   │   └── model/constants.ts     # USER_INFO mock data
+│   ├── live/                      # live.bilibili.com
+│   │   ├── index.ts               # [...playHistory]
+│   │   └── hooks/plugin/playHistory/
+│   │       ├── index.ts           # [useLiveDetail, useHistoryReport]
+│   │       ├── useLiveDetail.ts   # Live room detail for history
+│   │       └── useHistoryReport.ts # Live history report
+│   └── t/                         # t.bilibili.com — dynamic pages (no hooks yet)
 ```
 
 ## Architecture Patterns
@@ -139,8 +193,33 @@ export default [...history, ...video, ...someFeature]
   }
   ```
 
-### Response format
-All API responses use Bilibili's envelope: `{ code, message, ttl, data }`. Use `toResult(data)` from `@/constants/utils` to wrap mock data.
+### Plugin pattern — playHistory sub-system
+
+Watch history reporting is a cross-cutting concern spanning multiple subdomains (video, bangumi, live, opus). Each subdomain has its own `plugin/playHistory/` (or `readHistory/`) directory that exports an array of hooks, which are then composed into the subdomain's index.
+
+```
+www/video/hooks/plugin/playHistory/
+├── index.ts                  # [useHeartbeat, usePlayHistory, useVideoDetail]
+├── useHeartbeat.ts           # Reports heartbeat to history
+├── usePlayHistory.ts         # Reports play history
+└── useVideoDetail.ts         # Fetches video detail for history
+
+www/bangumi/hooks/plugin/playHistory/
+├── index.ts                  # [useBangumiDetail, useCover]
+├── useBangumiDetail.ts
+└── useCover.ts
+
+live/hooks/plugin/playHistory/
+├── index.ts                  # [useLiveDetail, useHistoryReport]
+├── useLiveDetail.ts
+└── useHistoryReport.ts
+
+www/opus/hooks/plugin/readHistory/
+├── index.ts                  # [useHistoryReport]
+└── useHistoryReport.ts
+```
+
+The `playHistory` hooks write to a local IndexedDB store (`src/store/playHistory.ts`) via Dexie. The `www/history/` hooks then read from this store to serve the `/x/web-interface/history/cursor` and `/x/web-interface/history/search` endpoints, replacing Bilibili's server-side history with local data.
 
 ### Login detection flow
 1. At `document-start`, check for `DedeUserID__ckMd5` cookie
