@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-alpha.3](https://github.com/vruses/beefreely/compare/v3.0.0-alpha.2...v3.0.0-alpha.3) (2026-07-15)
+
+
+### Bug Fixes
+
+* **video:** fix wrong page ([657a031](https://github.com/vruses/beefreely/commit/657a031aa781bd07072d9bcf521401d04dfc592f))
+
 ## [3.0.0-alpha.2](https://github.com/vruses/beefreely/compare/v3.0.0-alpha.1...v3.0.0-alpha.2) (2026-07-03)
 
 
