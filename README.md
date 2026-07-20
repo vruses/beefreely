@@ -2,7 +2,7 @@
 
 [![build status](https://github.com/vruses/beefreely/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/vruses/beefreely/actions/workflows/ci.yml) [![GreasyFork Downloads](https://img.shields.io/greasyfork/dt/533339?color=900)](https://greasyfork.org/zh-CN/scripts/533339) [![GitHub Repo stars](https://img.shields.io/github/stars/vruses/beefreely)](https://github.com/vruses/beefreely)
 
-通过拦截部分 Bilibili 关键接口的请求与响应，在**未登录状态下**获得接近登录用户的完整体验。
+通过拦截部分 Bilibili 关键接口的请求与响应，在**未登录状态下**获得接近登录用户的完整体验，拦截不及时可 `Ctrl + Shift + R` 强制无缓存刷新页面（在用户空间页面比较明显）
 
 ---
 
