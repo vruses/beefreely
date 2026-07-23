@@ -4,6 +4,7 @@
   "labels": ["dependencies"],
   "rangeStrategy": "bump",
   "minimumReleaseAge": "24 hours",
+  "updateNotScheduled": false,
   "packageRules": [
     {
       "matchDepTypes": ["peerDependencies"],
