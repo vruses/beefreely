@@ -27,13 +27,13 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 10.34.5
           run_install: true
 
       - name: Setup node
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 22.23.2
           cache: pnpm
 
       - name: Typecheck
