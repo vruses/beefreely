@@ -30,12 +30,12 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.1",
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "^26.0.1",
+    "@types/node": "^26.4.1",
     "lefthook": "^2.1.9",
     "standard-version": "^9.5.0",
     "type-fest": "^5.7.0",
     "typescript": "^6.0.3",
-    "vite": "^8.1.1",
-    "vite-plugin-monkey": "^8.0.6"
+    "vite": "^8.2.2",
+    "vite-plugin-monkey": "^8.1.1"
   }
 }
