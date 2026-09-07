@@ -28,10 +28,10 @@
     "ts-md5": "^2.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.1",
+    "@biomejs/biome": "^2.5.12",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^26.0.1",
-    "lefthook": "^2.1.9",
+    "lefthook": "^2.1.12",
     "standard-version": "^9.5.0",
     "type-fest": "^5.7.0",
     "typescript": "^6.0.3",
