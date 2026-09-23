@@ -34,6 +34,13 @@ export const useNav: RequestFn<unknown> = (request) => {
 export const useReply: RequestFn<'fetch'> = (request) => {
   if (!request.url.includes('/x/v2/reply/wbi/main') && !request.url.includes('/x/v2/reply/reply')) return
 
+  if (request.url.includes('/x/v2/reply/reply')) {
+    const [path, qs = ''] = request.url.split('?')
+    const params = new URLSearchParams(qs)
+    params.set('ps', '20')
+    request.url = `${path}?${params}`
+  }
+
   request.credentials = 'omit'
 }
 
