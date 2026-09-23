@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/vruses/beefreely/compare/v3.0.0-alpha.3...v3.0.0) (2026-09-23)
+
+
+### Bug Fixes
+
+* **reply:** force page size to 20 for sub-reply requests ([9531d7e](https://github.com/vruses/beefreely/commit/9531d7eac4ed82513dfeafbbf1f0da14eaa62af2))
+
 ## [3.0.0-alpha.3](https://github.com/vruses/beefreely/compare/v3.0.0-alpha.2...v3.0.0-alpha.3) (2026-07-15)
 
 
