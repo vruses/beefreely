@@ -34,7 +34,7 @@
     "lefthook": "^2.1.9",
     "standard-version": "^9.5.0",
     "type-fest": "^5.7.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vite": "^8.1.1",
     "vite-plugin-monkey": "^8.0.6"
   }
