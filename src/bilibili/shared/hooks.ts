@@ -31,17 +31,21 @@ export const useNav: RequestFn<unknown> = (request) => {
 /**
  * @description 拦截获取稿件或者动态评论及子评论列表请求，解除评论获取的数量限制
  */
-export const useReply: RequestFn<'fetch'> = (request) => {
+export const useReply: RequestFn = (request) => {
   if (!request.url.includes('/x/v2/reply/wbi/main') && !request.url.includes('/x/v2/reply/reply')) return
 
   if (request.url.includes('/x/v2/reply/reply')) {
     const [path, qs = ''] = request.url.split('?')
     const params = new URLSearchParams(qs)
-    params.set('ps', '20')
+    params.delete('x-bili-device-req-json')
     request.url = `${path}?${params}`
   }
 
-  request.credentials = 'omit'
+  if (request.type === 'fetch') {
+    request.credentials = 'omit'
+  } else {
+    request.withCredentials = false
+  }
 }
 
 /**
