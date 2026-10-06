@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/vruses/beefreely/compare/v3.0.0...v3.0.1) (2026-10-06)
+
+
+### Bug Fixes
+
+* **reply:** fix sub-reply pagination failure ([8409e7b](https://github.com/vruses/beefreely/commit/8409e7b353e0413bd3ebc7c5c77d1d2072644e8a))
+* **reply:** strict RequestFn type and simplify credential omit ([ad4b68f](https://github.com/vruses/beefreely/commit/ad4b68f26792af6bd173796a8128879373bbfefa))
+
 ## [3.0.0](https://github.com/vruses/beefreely/compare/v3.0.0-alpha.3...v3.0.0) (2026-09-23)
 
 
