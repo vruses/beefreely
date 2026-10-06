@@ -31,7 +31,7 @@ export const useNav: RequestFn<unknown> = (request) => {
 /**
  * @description 拦截获取稿件或者动态评论及子评论列表请求，解除评论获取的数量限制
  */
-export const useReply: RequestFn = (request) => {
+export const useReply: RequestFn<'fetch'> = (request) => {
   if (!request.url.includes('/x/v2/reply/wbi/main') && !request.url.includes('/x/v2/reply/reply')) return
 
   if (request.url.includes('/x/v2/reply/reply')) {
@@ -41,11 +41,7 @@ export const useReply: RequestFn = (request) => {
     request.url = `${path}?${params}`
   }
 
-  if (request.type === 'fetch') {
-    request.credentials = 'omit'
-  } else {
-    request.withCredentials = false
-  }
+  request.credentials = 'omit'
 }
 
 /**
