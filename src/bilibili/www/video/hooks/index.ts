@@ -67,20 +67,20 @@ export const usePlayurl2: RequestFn<'xhr'> = (request) => {
 /**
  * @description 返回与视频up主的关系，用于显示粉丝数
  */
-export const useRelation: RequestFn<'xhr'> = (request) => {
+export const useRelation: RequestFn<'fetch'> = (request) => {
   if (!request.url.includes('/x/web-interface/relation')) return
   request.response = (res) => {
-    res.responseText = JSON.stringify(relationResult)
+    res.json = relationResult
   }
 }
 
 /**
  * @description 返回用户与该视频的互动数据，用于去除某些未登录提示
  */
-export const useArchiveRelation: RequestFn<'xhr'> = (request) => {
+export const useArchiveRelation: RequestFn<'fetch'> = (request) => {
   if (!request.url.includes('/x/web-interface/archive/relation')) return
   request.response = (res) => {
-    res.responseText = JSON.stringify(archiveRelationResult)
+    res.json = archiveRelationResult
   }
 }
 
