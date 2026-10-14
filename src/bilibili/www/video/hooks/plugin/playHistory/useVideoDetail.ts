@@ -5,11 +5,11 @@ import { onResponse, type RequestFn } from '@/utils/ajax'
 /**
  * @description 视频详细数据获取
  */
-export const useVideoDetail: RequestFn<'xhr'> = (request) => {
+export const useVideoDetail: RequestFn<'fetch'> = (request) => {
   if (!request.url.includes('/x/web-interface/wbi/view/detail')) return
 
   onResponse(request, async (res) => {
-    const detailData = JSON.parse(res.responseText)
+    const detailData = res.json
     const view = detailData.data.View as VideoDetailView
     if (!view) return
 

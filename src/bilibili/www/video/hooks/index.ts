@@ -1,5 +1,6 @@
 import protobuf from 'protobufjs'
 import { img_key, sub_key } from '@/constants'
+import { toResult } from '@/constants/utils'
 import type { ResultType } from '@/types/response'
 import { onResponse, type RequestFn } from '@/utils/ajax'
 import { encWbi } from '@/utils/wbi-sign'
@@ -136,4 +137,28 @@ export const useDmView: () => RequestFn<'xhr', unknown, ArrayBuffer> = () => {
       res.response = encodedBuffer as unknown as ArrayBuffer
     }
   }
+}
+
+/**
+ * 预览 up 稿件触发风控时，将请求结果 fallback 到空列表避免登录弹窗
+ */
+export const useArchiveSearch: RequestFn<'fetch', any, ResultType<any>> = (request) => {
+  if (!request.url.includes('/x/space/wbi/arc/search')) return
+  onResponse(request, async (res) => {
+    // code 非 0 状态，比如 "code":-352,"message":"风控校验失败" 时设置响应空数据
+    if (res.json.code) {
+      res.json = toResult({
+        list: {
+          slist: [],
+          tlist: {},
+          vlist: [],
+        },
+        page: {},
+        episodic_button: {},
+        is_risk: false,
+        gaia_res_type: 0,
+        gaia_data: null,
+      })
+    }
+  })
 }
