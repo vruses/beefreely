@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.2](https://github.com/vruses/beefreely/compare/v3.0.1...v3.0.2) (2026-10-14)
+
+
+### Bug Fixes
+
+* **video:** add useArchiveSearch to fallback arc/search on risk control ([7553b55](https://github.com/vruses/beefreely/commit/7553b55065c2b8857ce7f9058a60c31311461d82))
+* **video:** update relation and archiveRelation hooks to use fetch ([967788a](https://github.com/vruses/beefreely/commit/967788af8e4bef1b9664f9239f5368936be180b9))
+
 ### [3.0.1](https://github.com/vruses/beefreely/compare/v3.0.0...v3.0.1) (2026-10-06)
 
 
